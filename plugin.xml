@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.fathens.cordova.plugin.aws.S3" version="0.0.1" xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>Fabric</name>
+    <description>Cordova Plugin for AWS S3</description>
+    <license>MIT</license>
+
+    <engines>
+        <engine name="cordova-android" version=">=6.0.0" />
+        <engine name="cordova-ios" version=">=4.3.0" />
+    </engines>
+
+    <dependency id="org.fathens.cordova.plugin.aws.Base" url="https://github.com/fathens/Cordova-Plugin-AWS_Base.git" commit="master" />
+
+    <platform name="android">
+        <framework src="platforms/android/plugin.gradle" custom="true" type="gradleReference"/>
+
+        <hook type="after_prepare" src="platforms/android/hooks/after_prepare.rb"/>
+    </platform>
+
+    <platform name="ios">
+        <hook type="after_prepare" src="platforms/ios/hooks/after_prepare.rb"/>
+    </platform>
+</plugin>
