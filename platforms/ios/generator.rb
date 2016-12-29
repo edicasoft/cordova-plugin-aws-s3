@@ -18,7 +18,6 @@ PLUGIN_DIR = PLATFORM_DIR.dirname.dirname
 
 podfile = Podfile.from_pluginxml(PLUGIN_DIR/'plugin.xml')
 podfile.pods.unshift Pod.new(name: 'Cordova')
-podfile.pods.unshift Pod.new(name: 'AWSCognito')
 podfile.swift_version ||= '3.0'
 podfile.ios_version ||= '10.0'
 
