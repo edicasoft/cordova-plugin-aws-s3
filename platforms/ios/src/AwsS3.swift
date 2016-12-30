@@ -154,7 +154,7 @@ class AwsS3: CDVPlugin {
         fork(command) {
             let req = AWSS3GetPreSignedURLRequest()
             req.key = self.getString(0)
-            req.expires = Date.init(timeIntervalSinceNow: (command.argument(at: 1) as! Double))
+            req.expires = Date.init(timeIntervalSinceNow: Double(command.argument(at: 1) as! Int64))
             req.bucket = self.bucketName
             req.httpMethod = AWSHTTPMethod.GET
             
