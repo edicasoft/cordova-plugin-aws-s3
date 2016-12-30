@@ -67,7 +67,7 @@ class AwsS3: CDVPlugin {
         fork(command) {
             let data = self.getString(0).data(using: String.Encoding.utf8)!
             let key = self.getString(1)
-            let ct = (command.argument(at: 2) as? String) ?? "text/plain"
+            let ct = self.getString(2)
             
             self.withTask(AWSS3TransferUtility.default().uploadData(data, bucket: self.bucketName, key: key, contentType: ct, expression: nil, completionHander: nil))
         }
@@ -153,10 +153,10 @@ class AwsS3: CDVPlugin {
     func url(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             let req = AWSS3GetPreSignedURLRequest()
-            req.bucket = self.bucketName
             req.key = self.getString(0)
+            req.expires = Date.init(timeIntervalSinceNow: (command.argument(at: 1) as! Double))
+            req.bucket = self.bucketName
             req.httpMethod = AWSHTTPMethod.GET
-            req.expires = Date.init(timeIntervalSinceNow: 60 * 60)
             
             AWSS3PreSignedURLBuilder.default().getPreSignedURL(req).continue({ task in
                 if let error = task.error {
