@@ -16,6 +16,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata
 import org.apache.cordova.CordovaResourceApi
 import org.apache.cordova.PluginResult
 import java.io.File
+import java.util.*
 
 public class AwsS3 : CordovaPlugin() {
     private class PluginContext(val holder: AwsS3, val action: String, val callback: CallbackContext) {
@@ -145,7 +146,9 @@ public class AwsS3 : CordovaPlugin() {
     }
 
     fun url(args: JSONArray) {
-        val res = s3.getUrl(bucketName, args.getString(0))
+        val key = args.getString(0)
+        val expir = args.getLong(1) * 1000
+        val res = s3.generatePresignedUrl(bucketName, key, Date(Date().time + expir))
         context?.success(res.toString())
     }
 
