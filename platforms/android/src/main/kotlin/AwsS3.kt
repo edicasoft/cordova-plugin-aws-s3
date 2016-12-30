@@ -79,7 +79,9 @@ public class AwsS3 : CordovaPlugin() {
     }
 
     fun write(args: JSONArray) {
-        s3.putObject(bucketName, args.getString(0), args.getString(1).byteInputStream(), ObjectMetadata())
+        val meta = ObjectMetadata()
+        meta.contentType = args.getString(2)
+        s3.putObject(bucketName, args.getString(0), args.getString(1).byteInputStream(), meta)
         context?.success()
     }
 
