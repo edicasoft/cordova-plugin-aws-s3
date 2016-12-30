@@ -74,12 +74,12 @@ public class AwsS3 : CordovaPlugin() {
     }
 
     fun upload(args: JSONArray) {
-        s3.putObject(bucketName, args.getString(0), args.getString(1).byteInputStream(), ObjectMetadata())
+        s3.putObject(bucketName, args.getString(0), File(args.getString(1)))
         context?.success()
     }
 
     fun write(args: JSONArray) {
-        s3.putObject(bucketName, args.getString(0), File(args.getString(1)))
+        s3.putObject(bucketName, args.getString(0), args.getString(1).byteInputStream(), ObjectMetadata())
         context?.success()
     }
 
