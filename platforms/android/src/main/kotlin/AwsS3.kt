@@ -1,6 +1,7 @@
 package org.fathens.cordova.plugin.aws
 
 import android.content.pm.PackageManager.GET_META_DATA
+import android.net.Uri
 import android.os.Bundle
 import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.auth.CognitoCachingCredentialsProvider
@@ -12,6 +13,7 @@ import org.json.JSONObject
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.DeleteObjectsRequest
 import com.amazonaws.services.s3.model.ObjectMetadata
+import org.apache.cordova.CordovaResourceApi
 import org.apache.cordova.PluginResult
 import java.io.File
 
@@ -64,7 +66,7 @@ public class AwsS3 : CordovaPlugin() {
         val file = createTmpFile()
         val obj = s3.getObject(bucketName, args.getString(0))
         file.writeBytes(obj.objectContent.readBytes())
-        context?.success(file.absolutePath)
+        context?.success(Uri.fromFile(file).toString())
     }
 
     fun read(args: JSONArray) {
@@ -74,14 +76,20 @@ public class AwsS3 : CordovaPlugin() {
     }
 
     fun upload(args: JSONArray) {
-        s3.putObject(bucketName, args.getString(0), File(args.getString(1)))
+        val key = args.getString(0)
+        val source = parseUri(args.getString(1))
+        val meta = ObjectMetadata().apply { contentType = source.mimeType }
+
+        s3.putObject(bucketName, key, source.inputStream, meta)
         context?.success()
     }
 
     fun write(args: JSONArray) {
-        val meta = ObjectMetadata()
-        meta.contentType = args.getString(2)
-        s3.putObject(bucketName, args.getString(0), args.getString(1).byteInputStream(), meta)
+        val key = args.getString(0)
+        val source = args.getString(1).byteInputStream()
+        val meta = ObjectMetadata().apply { contentType = args.getString(2) }
+
+        s3.putObject(bucketName, key, source, meta)
         context?.success()
     }
 
@@ -167,5 +175,12 @@ public class AwsS3 : CordovaPlugin() {
     private fun createTmpFile(suffix: String = ""): File {
         val dir = cordova.activity.applicationContext.cacheDir
         return File.createTempFile(javaClass.canonicalName, suffix, dir)
+    }
+
+    private fun parseUri(source: String): CordovaResourceApi.OpenForReadResult {
+        val tmp = Uri.parse(source)
+        val uri = webView.resourceApi.remapUri(
+                if (tmp.scheme != null) tmp else Uri.fromFile(File(source)))
+        return webView.resourceApi.openForRead(uri)
     }
 }

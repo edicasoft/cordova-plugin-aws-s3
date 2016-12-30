@@ -52,7 +52,7 @@ class AwsS3: CDVPlugin {
     func upload(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             if let req = AWSS3TransferManagerUploadRequest() {
-                req.body = URL.init(string: self.getString(0))
+                req.body = URL(fileURLWithPath: self.getString(0))
                 req.key = self.getString(1)
                 req.bucket = self.bucketName
                 
