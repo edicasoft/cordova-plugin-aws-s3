@@ -9,6 +9,6 @@
   "author": "f:athens",
   "license": "MIT",
   "dependencies": {
-    "cordova-plugin-aws": "fathens/Cordova-Plugin-AWS"
+    "cordova-plugin-aws": "fathens/Cordova-Plugin-AWS_Base"
   }
 }
