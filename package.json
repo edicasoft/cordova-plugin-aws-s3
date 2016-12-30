@@ -4,7 +4,7 @@
   "description": "Cordova Plugin for AWS S3",
   "main": "lib/index.js",
   "scripts": {
-    "postinstall": "add_plugin org.fathens.cordova.plugin.aws.S3 https://github.com/fathens/Cordova-Plugin-AWS_S3.git AWS_S3_BUCKET"
+    "postinstall": "add_plugin org.fathens.cordova.plugin.aws.S3 https://github.com/fathens/Cordova-Plugin-AWS_S3.git AWS_S3_BUCKET_NAME"
   },
   "author": "f:athens",
   "license": "MIT",
