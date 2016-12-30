@@ -137,13 +137,16 @@ class AwsS3: CDVPlugin {
     
     func exists(_ command: CDVInvokedUrlCommand) {
         fork(command) {
-            let req = AWSS3GetObjectAclRequest()!
-            req.key = self.getString(0)
-            req.bucket = self.bucketName
-            self.s3.getObjectAcl(req).continue({ task in
-                self.finish_ok(task.error != nil)
-                return nil
-            })
+            if let req = AWSS3GetObjectAclRequest() {
+                req.key = self.getString(0)
+                req.bucket = self.bucketName
+                self.s3.getObjectAcl(req).continue({ task in
+                    self.finish_ok(task.error != nil)
+                    return nil
+                })
+            } else {
+                self.finish_error("Failed to initialize a request.")
+            }
         }
     }
     
@@ -159,7 +162,11 @@ class AwsS3: CDVPlugin {
                 if let error = task.error {
                     self.finish_error(error.localizedDescription)
                 } else {
-                    self.finish_ok(task.result!.absoluteString)
+                    if let result = task.result {
+                        self.finish_ok(result.absoluteString)
+                    } else {
+                        self.finish_error("Empty result")
+                    }
                 }
                 return nil
             })
@@ -230,7 +237,11 @@ class AwsS3: CDVPlugin {
                 self.finish_error(error.localizedDescription)
             } else {
                 if let callback = callback {
-                    callback(task.result!)
+                    if let result = task.result {
+                        callback(result)
+                    } else {
+                        self.finish_error("No result")
+                    }
                 } else {
                     self.finish_ok()
                 }
