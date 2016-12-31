@@ -6,6 +6,7 @@
         "experimentalDecorators": true,
         "strictNullChecks": true,
         "lib": [
+            "dom",
             "es2015"
         ],
         "module": "es2015",
