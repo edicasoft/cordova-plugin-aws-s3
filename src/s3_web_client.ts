@@ -1,26 +1,36 @@
 import _ from "lodash";
 import { Logger } from "log4ts";
+import { S3 } from "aws-sdk";
 
 import { S3Client } from "./s3client";
 
-declare var AWS_S3_BUCKET_NAME;
+const AWS_S3_BUCKET_NAME = (window as any).AWS_S3_BUCKET_NAME;
+const AWS = (window as any).AWS;
 
 const logger = new Logger("S3WebClient");
 
+interface AWSRequest {
+    send(callback: (err, data) => void): void;
+}
+
 export class S3WebClient implements S3Client {
-    constructor() {
-        this.client = cognito.identity.then((x) => new AWS.S3());
-    }
+    private client = new AWS.S3();
 
-    private client: Promise<S3>;
-
-    private async invoke<R>(proc: (s3client) => AWSRequest): Promise<R> {
-        return requestToPromise<R>(proc(await this.client));
+    private async invoke<R>(request: AWSRequest): Promise<R> {
+        return new Promise<R>((resolve, reject) => {
+            request.send((err, data) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(data);
+                }
+            });
+        });
     }
 
     private async load(path: string): Promise<{Body: number[]}> {
         logger.debug(() => `Reading file: ${AWS_S3_BUCKET_NAME}:${path}`);
-        return await this.invoke<{ Body: number[] }>((s3) => s3.getObject({
+        return await this.invoke<{ Body: number[] }>(this.client.getObject({
             Bucket: AWS_S3_BUCKET_NAME,
             Key: path
         }));
@@ -38,7 +48,7 @@ export class S3WebClient implements S3Client {
 
     async write(path: string, text: string): Promise<void> {
         logger.debug(() => `Write file: ${AWS_S3_BUCKET_NAME}:${path}`);
-        await this.invoke((s3) => s3.putObject({
+        await this.invoke(this.client.putObject({
             Bucket: AWS_S3_BUCKET_NAME,
             Key: path,
             Body: text
@@ -47,7 +57,7 @@ export class S3WebClient implements S3Client {
 
     async upload(path: string, blob: Blob): Promise<void> {
         logger.debug(() => `Uploading file: ${AWS_S3_BUCKET_NAME}:${path}`);
-        await this.invoke((s3) => s3.putObject({
+        await this.invoke(this.client.putObject({
             Bucket: AWS_S3_BUCKET_NAME,
             Key: path,
             Body: blob,
@@ -57,7 +67,7 @@ export class S3WebClient implements S3Client {
 
     async remove(path: string): Promise<void> {
         logger.debug(() => `Removing file: ${AWS_S3_BUCKET_NAME}:${path}`);
-        await this.invoke((s3) => s3.deleteObject({
+        await this.invoke(this.client.deleteObject({
             Bucket: AWS_S3_BUCKET_NAME,
             Key: path
         }));
@@ -67,7 +77,7 @@ export class S3WebClient implements S3Client {
         logger.debug(() => `Removing files in bucket[${AWS_S3_BUCKET_NAME}]: ${JSON.stringify(pathList, null, 4)}`);
         const lists = _.chunk(pathList, 1000);
         await Promise.all(_.map(lists, (list) =>
-            this.invoke((s3) => s3.deleteObjects({
+            this.invoke(this.client.deleteObjects({
                 Bucket: AWS_S3_BUCKET_NAME,
                 Delete: {
                     Objects: _.map(list, (path) => {
@@ -89,7 +99,7 @@ export class S3WebClient implements S3Client {
 
     async copy(src: string, dst: string): Promise<void> {
         logger.debug(() => `Copying file: ${AWS_S3_BUCKET_NAME}:${src}=>${dst}`);
-        await this.invoke((s3) => s3.copyObject({
+        await this.invoke(this.client.copyObject({
             Bucket: AWS_S3_BUCKET_NAME,
             CopySource: `${AWS_S3_BUCKET_NAME}/${src}`,
             Key: dst
@@ -113,7 +123,7 @@ export class S3WebClient implements S3Client {
     }
 
     async list(path: string): Promise<Array<string>> {
-        const res = await this.invoke<{ Contents: { Key: string }[] }>((s3) => s3.listObjects({
+        const res = await this.invoke<{ Contents: { Key: string }[] }>(this.client.listObjects({
             Bucket: AWS_S3_BUCKET_NAME,
             Prefix: path
         }));
@@ -123,7 +133,7 @@ export class S3WebClient implements S3Client {
     async exists(path: string): Promise<boolean> {
         logger.debug(() => `Checking exists: ${AWS_S3_BUCKET_NAME}:${path}`);
         try {
-            const res = await this.invoke<{ ContentLength: number }>((s3) => s3.headObject({
+            const res = await this.invoke<{ ContentLength: number }>(this.client.headObject({
                 Bucket: AWS_S3_BUCKET_NAME,
                 Key: path
             }));
@@ -135,9 +145,8 @@ export class S3WebClient implements S3Client {
     }
 
     async url(path: string, expiresInSeconds: number): Promise<string> {
-        const s3: any = await this.client;
         logger.debug(() => `Getting url of file: ${AWS_S3_BUCKET_NAME}:${path}`);
-        return s3.getSignedUrl("getObject", {
+        return this.client.getSignedUrl("getObject", {
             Bucket: AWS_S3_BUCKET_NAME,
             Key: path,
             Expires: expiresInSeconds
