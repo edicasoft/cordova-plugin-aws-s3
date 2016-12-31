@@ -10,7 +10,7 @@ gulp.task('compile', () => {
     const proj = ts.createProject('tsconfig.json');
     return gulp.src("src/**/*.ts")
     .pipe(proj()).js
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest(outDir));
 });
 
 gulp.task('default', ['compile']);
