@@ -1,6 +1,5 @@
 import _ from "lodash";
 import { Logger } from "log4ts";
-import { S3 } from "aws-sdk";
 
 import { S3Client } from "./s3client";
 
