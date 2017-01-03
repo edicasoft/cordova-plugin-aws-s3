@@ -11,7 +11,7 @@ const logger = new Logger("S3File");
 function isDef(typedec) {
     return !_.isEqual(typedec, 'undefined');
 }
-const hasPlugin() = isDef(typeof plugin) && isDef(typeof plugin.AWS) && isDef(typeof plugin.AWS.S3);
+const hasPlugin = isDef(typeof plugin) && isDef(typeof plugin.AWS) && isDef(typeof plugin.AWS.S3);
 
 export class S3File implements S3Client {
     constructor() {

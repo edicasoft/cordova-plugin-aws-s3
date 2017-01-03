@@ -1,19 +1,21 @@
 import _ from "lodash";
+import { Logger } from "log4ts";
 import { SafeUrl, DomSanitizer } from "@angular/platform-browser";
 import { Storage } from "@ionic/storage";
 
 import { S3File } from "./s3file";
 
+const logger = new Logger("S3Image");
+
 export class S3Image {
     constructor(public s3: S3File, private local: Storage, private sanitizer: DomSanitizer) { }
 
     async getUrl(s3path: string): Promise<SafeUrl> {
-        assert("Caching S3 path", s3path);
         const url = await this.getCached(s3path);
         return _.isNil(url) ? null : this.sanitizer.bypassSecurityTrustUrl(url);
     }
 
-    private async getCached(s3path: string): Promise<string> {
+    private async getCached(s3path: string): Promise<string | null> {
         try {
             if (await this.s3.exists(s3path)) {
                 try {
