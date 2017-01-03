@@ -22,9 +22,13 @@
     "lodash": "^4.17.3",
     "typescript": "~2.0.10"
   },
+  "config": {
+    "envs": "AWS_S3_BUCKET_NAME"
+  },
   "scripts": {
     "build": "tsc",
-    "postinstall": "tsc && add_plugin AWS_S3_BUCKET_NAME"
+    "postinstall": "tsc && add_plugin ${npm_package_config_envs}",
+    "prestart": "web_inject ${npm_package_config_envs}"
   },
   "author": "f:athens",
   "license": "MIT",
