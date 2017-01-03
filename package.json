@@ -26,6 +26,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "watch": "tsc --watch",
     "postinstall": "tsc && _inject_pre AWS_S3_BUCKET_NAME"
   },
   "author": "f:athens",
