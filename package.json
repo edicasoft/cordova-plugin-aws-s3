@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-awss3",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Cordova Plugin for AWS S3",
   "main": "dist/index.js",
   "typings": "dist/index",
