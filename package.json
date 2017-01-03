@@ -1,0 +1,35 @@
+{
+  "name": "cordova-plugin-awss3",
+  "version": "0.0.2",
+  "description": "Cordova Plugin for AWS S3",
+  "main": "dist/index.js",
+  "typings": "dist/index",
+  "dependencies": {
+    "@angular/common": "^2.4.1",
+    "@angular/platform-browser": "^2.4.1",
+    "@ionic/storage": "^1.1.7",
+    "@types/lodash": "^4.14.45",
+    "cordova-plugin-aws": "github:fathens/Cordova-Plugin-AWS_Base",
+    "lodash": "^4.17.3",
+    "log4ts": "github:fathens/log4ts"
+  },
+  "devDependencies": {
+    "typescript": "~2.0.10"
+  },
+  "peerDependencies": {
+    "@angular/common": "^2.4.1",
+    "@types/lodash": "^4.14.45",
+    "lodash": "^4.17.3",
+    "typescript": "~2.0.10"
+  },
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "tsc && add_plugin AWS_S3_BUCKET_NAME"
+  },
+  "author": "f:athens",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fathens/Cordova-Plugin-AWS_S3.git"
+  }
+}
