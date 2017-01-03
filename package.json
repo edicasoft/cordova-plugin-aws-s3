@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "typings": "dist/index",
   "dependencies": {
-    "@angular/common": "^2.4.1",
-    "@angular/platform-browser": "^2.4.1",
+    "@angular/common": "~2.2.1",
+    "@angular/platform-browser": "~2.2.1",
     "@ionic/storage": "^1.1.7",
     "@types/lodash": "^4.14.45",
     "cordova-plugin-aws": "github:fathens/Cordova-Plugin-AWS_Base",
@@ -17,7 +17,7 @@
     "typescript": "~2.0.10"
   },
   "peerDependencies": {
-    "@angular/common": "^2.4.1",
+    "@angular/common": "~2.2.1",
     "@types/lodash": "^4.14.45",
     "lodash": "^4.17.3",
     "typescript": "~2.0.10"
