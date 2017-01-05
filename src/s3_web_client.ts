@@ -3,7 +3,7 @@ import { Logger } from "log4ts";
 
 import { S3Client } from "./s3client";
 
-const AWS_S3_BUCKET_NAME = (window as any).AWS_S3_BUCKET_NAME;
+declare const AWS_S3_BUCKET_NAME;
 const AWS = (window as any).AWS;
 
 const logger = new Logger("S3WebClient");
