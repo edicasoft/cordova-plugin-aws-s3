@@ -36,7 +36,7 @@
     <platform name="ios">
         <config-file target="*-Info.plist" parent="CordovaAWS">
             <dict>
-                <key>BucketName</key>
+                <key>S3BucketName</key>
                 <string>$AWS_S3_BUCKET_NAME</string>
             </dict>
         </config-file>
