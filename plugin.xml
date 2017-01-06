@@ -31,7 +31,7 @@
         <hook type="after_prepare" src="platforms/ios/hooks/after_prepare.rb"/>
 
         <podfile swift_version="3.0">
-            <pod name="AWSS3" />
+            <pod name="AWSS3" version="~> 2.4.16" />
         </podfile>
     </platform>
 </plugin>
