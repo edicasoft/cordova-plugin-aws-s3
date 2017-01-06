@@ -34,6 +34,13 @@
     </platform>
 
     <platform name="ios">
+        <config-file target="*-Info.plist" parent="CordovaAWS">
+            <dict>
+                <key>BucketName</key>
+                <string>$AWS_S3_BUCKET_NAME</string>
+            </dict>
+        </config-file>
+
         <config-file parent="/*" target="config.xml">
             <feature name="AWSS3Plugin">
                 <param name="ios-package" value="AwsS3"/>
