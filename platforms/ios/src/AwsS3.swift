@@ -10,17 +10,17 @@ fileprivate func log(_ msg: String) {
 @objc(AwsS3)
 class AwsS3: CDVPlugin {
     // MARK: - Plugin Commands
-    
+
     func download(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             if let req = AWSS3TransferManagerDownloadRequest() {
                 req.key = self.getString(0)
                 req.bucket = self.bucketName
-                
+
                 let tmpDir = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
                 let tmpFile = tmpDir.appendingPathComponent("downloading")
                 req.downloadingFileURL = tmpFile
-                
+
                 self.withTask(AWSS3TransferManager.default().download(req)) { res in
                     self.finish_ok(tmpFile.absoluteString)
                 }
@@ -29,11 +29,11 @@ class AwsS3: CDVPlugin {
             }
         }
     }
-    
+
     func read(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             let key = self.getString(0)
-            
+
             AWSS3TransferUtility.default().downloadData(fromBucket: self.bucketName, key: key, expression: nil) { (task, url, data, error) in
                 if let error = error {
                     self.finish_error(error.localizedDescription)
@@ -48,44 +48,44 @@ class AwsS3: CDVPlugin {
             }
         }
     }
-    
+
     func upload(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             if let req = AWSS3TransferManagerUploadRequest() {
                 req.body = URL(fileURLWithPath: self.getString(0))
                 req.key = self.getString(1)
                 req.bucket = self.bucketName
-                
+
                 self.withTask(AWSS3TransferManager.default().upload(req))
             } else {
                 self.finish_error("Failed to initialize a request.")
             }
         }
     }
-    
+
     func write(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             let data = self.getString(0).data(using: String.Encoding.utf8)!
             let key = self.getString(1)
             let ct = self.getString(2)
-            
+
             self.withTask(AWSS3TransferUtility.default().uploadData(data, bucket: self.bucketName, key: key, contentType: ct, expression: nil, completionHander: nil))
         }
     }
-    
+
     func remove(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             self.remove(self.getString(0))
         }
     }
-    
+
     func removeFiles(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             let keys = command.arguments.map { $0 as! String }
             self.removeObjects(keys)
         }
     }
-    
+
     func removeDir(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             self.list(self.getString(0)) {
@@ -93,13 +93,13 @@ class AwsS3: CDVPlugin {
             }
         }
     }
-    
+
     func copy(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             self.copy([self.getString(0) : self.getString(1)])
         }
     }
-    
+
     func move(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             let src = self.getString(0)
@@ -109,12 +109,12 @@ class AwsS3: CDVPlugin {
             }
         }
     }
-    
+
     func moveDir(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             let srcDir = self.getString(0)
             let dstDir = self.getString(1)
-            
+
             self.list(srcDir) { keys in
                 var copies: [String : String] = [:]
                 keys.forEach { src in
@@ -126,7 +126,7 @@ class AwsS3: CDVPlugin {
             }
         }
     }
-    
+
     func list(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             self.list(self.getString(0)) {
@@ -134,7 +134,7 @@ class AwsS3: CDVPlugin {
             }
         }
     }
-    
+
     func exists(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             if let req = AWSS3GetObjectAclRequest() {
@@ -149,7 +149,7 @@ class AwsS3: CDVPlugin {
             }
         }
     }
-    
+
     func url(_ command: CDVInvokedUrlCommand) {
         fork(command) {
             let req = AWSS3GetPreSignedURLRequest()
@@ -157,7 +157,7 @@ class AwsS3: CDVPlugin {
             req.expires = Date.init(timeIntervalSinceNow: Double(command.argument(at: 1) as! Int64))
             req.bucket = self.bucketName
             req.httpMethod = AWSHTTPMethod.GET
-            
+
             AWSS3PreSignedURLBuilder.default().getPreSignedURL(req).continue({ task in
                 if let error = task.error {
                     self.finish_error(error.localizedDescription)
@@ -172,9 +172,9 @@ class AwsS3: CDVPlugin {
             })
         }
     }
-    
+
     // MARK: - Private Impl
-    
+
     private func copy(_ srcToDst: [String : String], _ callback: ((_ res: AnyObject) -> Void)? = nil) {
         func doCopy(src: String, dst: String) -> AWSTask<AnyObject> {
             return AWSTask<AnyObject>.init().continue({ task in
@@ -187,18 +187,18 @@ class AwsS3: CDVPlugin {
         }
         self.withTask(AWSTask<AnyObject>(forCompletionOfAllTasks: srcToDst.map(doCopy)), callback)
     }
-    
+
     func remove(_ key: String, _ callback: ((_ res: AWSS3DeleteObjectOutput) -> Void)? = nil) {
         if let req = AWSS3DeleteObjectRequest() {
             req.key = self.getString(0)
             req.bucket = self.bucketName
-            
+
             self.withTask(self.s3.deleteObject(req), callback)
         } else {
             self.finish_error("Failed to initialize a request.")
         }
     }
-    
+
     private func list(_ key: String, _ callback: @escaping (_ keys: [String]) -> Void) {
         if let req = AWSS3ListObjectsRequest() {
             req.bucket = self.bucketName
@@ -214,7 +214,7 @@ class AwsS3: CDVPlugin {
             self.finish_error("Failed to initialize a request.")
         }
     }
-    
+
     private func removeObjects(_ keys: [String], _ callback: ((_ res: AWSS3DeleteObjectsOutput) -> Void)? = nil) {
         if let req = AWSS3DeleteObjectsRequest() {
             req.bucket = self.bucketName
@@ -224,13 +224,13 @@ class AwsS3: CDVPlugin {
                 o!.key = key
                 return o!
             }
-            
+
             self.withTask(self.s3.deleteObjects(req), callback)
         } else {
             self.finish_error("Failed to initialize a request.")
         }
     }
-    
+
     private func withTask<T>(_ task: AWSTask<T>, _ callback: ((_ res: T) -> Void)? = nil) {
         task.continue({ task in
             if let error = task.error {
@@ -249,17 +249,17 @@ class AwsS3: CDVPlugin {
             return nil
         })
     }
-    
+
     // MARK: - Private Utillities
-    
+
     private var currentCommand: CDVInvokedUrlCommand?
-    
+
     lazy private var infoDict: [String : String] = Bundle.main.infoDictionary!["CordovaAWS"] as! [String : String]
-    
-    lazy private var bucketName: String = self.infoDict["BucketName"]!
-    
+
+    lazy private var bucketName: String = self.infoDict["S3BucketName"]!
+
     lazy private var s3: AWSS3 = AWSS3.default()
-    
+
     private func getString(_ index: UInt) -> String {
         return currentCommand!.argument(at: index) as! String
     }
@@ -277,13 +277,13 @@ class AwsS3: CDVPlugin {
             }
         })
     }
-    
+
     private func finish_error(_ msg: String!) {
         if let command = self.currentCommand {
             commandDelegate!.send(CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: msg), callbackId: command.callbackId)
         }
     }
-    
+
     private func finish_ok(_ result: Any? = nil) {
         if let command = self.currentCommand {
             log("Command Result: \(result)")
