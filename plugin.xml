@@ -22,16 +22,32 @@
             <meta-data android:name="org.fathens.aws.s3.bucket" android:value="$AWS_S3_BUCKET_NAME"/>
         </config-file>
 
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="AWSS3Plugin">
+                <param name="android-package" value="org.fathens.cordova.plugin.aws.AwsS3"/>
+            </feature>
+        </config-file>
+
+        <source-file src="platforms/android/src/main/kotlin/AwsS3.kt" target-dir="kotlin/org.fathens.cordova.plugin.aws"/>
+
         <framework src="platforms/android/plugin.gradle" custom="true" type="gradleReference"/>
 
         <hook type="after_prepare" src="platforms/android/hooks/after_prepare.rb"/>
     </platform>
 
     <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="AWSS3Plugin">
+                <param name="ios-package" value="AwsS3"/>
+            </feature>
+        </config-file>
+
+        <source-file src="platforms/ios/src/AwsS3.swift"/>
+
         <hook type="after_prepare" src="platforms/ios/hooks/after_prepare.rb"/>
 
         <podfile swift_version="3.0">
-            <pod name="AWSS3" />
+            <pod name="AWSS3" version="~> 2.4.16" />
         </podfile>
     </platform>
 </plugin>
