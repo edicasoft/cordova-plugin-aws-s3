@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.fathens.cordova.plugin.aws.S3" version="0.2.0" xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="org.fathens.cordova.plugin.aws.s3" version="0.2.0" xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>Fabric</name>
     <description>Cordova Plugin for AWS S3</description>
     <license>MIT</license>
@@ -15,7 +15,7 @@
         <clobbers target="plugin.AWS.S3"/>
     </js-module>
 
-    <dependency id="org.fathens.cordova.plugin.aws.Base" url="https://github.com/fathens/Cordova-Plugin-AWS_Base.git" commit="master" />
+    <dependency id="org.fathens.cordova.plugin.aws.core" url="https://github.com/fathens/cordova-plugin-aws-core.git" commit="master" />
 
     <platform name="android">
         <config-file target="AndroidManifest.xml" parent="application">
