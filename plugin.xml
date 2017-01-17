@@ -15,7 +15,7 @@
         <clobbers target="plugin.AWS.S3"/>
     </js-module>
 
-    <dependency id="org.fathens.cordova.plugin.aws.Base" url="https://github.com/fathens/Cordova-Plugin-AWS_Base.git" commit="master" />
+    <dependency id="org.fathens.cordova.plugin.aws.core" url="https://github.com/fathens/cordova-plugin-aws-core.git" commit="master" />
 
     <platform name="android">
         <config-file target="AndroidManifest.xml" parent="application">
