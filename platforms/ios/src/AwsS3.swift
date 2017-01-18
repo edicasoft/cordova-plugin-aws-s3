@@ -1,7 +1,4 @@
 import Foundation
-import Cordova
-import AWSCore
-import AWSS3
 
 fileprivate func log(_ msg: String) {
     print(msg)
