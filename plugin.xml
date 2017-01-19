@@ -9,7 +9,7 @@
         <engine name="cordova-ios" version=">=4.3.0" />
     </engines>
 
-    <preference name="AWS_S3_BUCKET_NAME" />
+    <preference name="AWS_S3_BUCKET_NAME" web="true" />
 
     <js-module name="AWSS3Plugin" src="www/s3.js">
         <clobbers target="plugin.AWS.S3"/>
@@ -49,8 +49,8 @@
 
         <source-file src="platforms/ios/src/AwsS3.swift"/>
 
-        <podfile swift_version="3.0">
-            <pod name="AWSS3" version="~> 2.4.16" />
-        </podfile>
+        <framework src="AWSS3" type="podspec" spec="~> 2.4.16">
+            <bridging-header import="AWSS3/AWSS3.h" />
+        </framework>
     </platform>
 </plugin>
