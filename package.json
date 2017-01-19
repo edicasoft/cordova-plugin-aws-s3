@@ -27,7 +27,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "postinstall": "tsc && add_plugin"
+    "postinstall": "tsc"
   },
   "author": "f:athens",
   "license": "MIT",
