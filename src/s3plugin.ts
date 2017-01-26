@@ -1,11 +1,11 @@
-export interface S3Client {
+export interface S3Plugin {
     download(path: string): Promise<string>;
 
     read(path: string): Promise<string>;
 
     write(path: string, text: string): Promise<void>;
 
-    upload(path: string, uri: string): Promise<void>;
+    upload(path: string, url: string): Promise<void>;
 
     remove(path: string): Promise<void>;
 

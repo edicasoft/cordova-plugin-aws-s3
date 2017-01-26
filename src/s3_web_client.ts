@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { Logger } from "log4ts";
 
-import { S3Client } from "./s3client";
+import { S3Plugin } from "./s3plugin";
 
 declare const AWS_S3_BUCKET_NAME;
 const AWS = (window as any).AWS;
@@ -12,7 +12,7 @@ interface AWSRequest {
     send(callback: (err, data) => void): void;
 }
 
-export class S3WebClient implements S3Client {
+export class S3WebClient implements S3Plugin {
     private client = new AWS.S3();
 
     private async invoke<R>(request: AWSRequest): Promise<R> {

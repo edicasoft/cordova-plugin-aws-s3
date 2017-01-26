@@ -2,13 +2,13 @@ import _ from "lodash";
 import { Injectable } from '@angular/core';
 import { Logger } from "log4ts";
 
-import { S3Client } from "./s3client";
+import { S3Plugin } from "./s3client";
 import { S3WebClient } from "./s3_web_client";
 
 const logger = new Logger("S3File");
 
 @Injectable()
-export class S3File implements S3Client {
+export class S3File {
     constructor() {
         const plugin = (window as any).plugin;
         function isDef(typedec) {
@@ -19,10 +19,11 @@ export class S3File implements S3Client {
         this.client = hasPlugin ? plugin.AWS.S3 : new S3WebClient();
     }
 
-    private client: S3Client;
+    private client: S3Plugin;
 
-    async download(path: string): Promise<Blob> {
-        return this.client.download(path);
+    async download(path: string): Promise<URL> {
+        const url = await this.client.download(path);
+        return new URL(url);
     }
 
     async read(path: string): Promise<string> {
@@ -33,8 +34,8 @@ export class S3File implements S3Client {
         return this.client.write(path, text);
     }
 
-    async upload(path: string, url: string): Promise<void> {
-        return this.client.upload(path, url);
+    async upload(path: string, url: URL): Promise<void> {
+        return this.client.upload(path, url.href);
     }
 
     async remove(path: string): Promise<void> {
