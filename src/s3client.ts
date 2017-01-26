@@ -11,7 +11,7 @@ import { CachedImage } from "./s3image";
 const logger = new Logger("S3File");
 
 @Injectable()
-export class S3File {
+export class S3Client {
     constructor(private local: Storage, private sanitizer: DomSanitizer) {
         const plugin = (window as any).plugin;
         function isDef(typedec) {

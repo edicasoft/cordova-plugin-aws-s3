@@ -3,7 +3,7 @@ import { Logger } from "log4ts";
 import { SafeUrl, DomSanitizer } from "@angular/platform-browser";
 import { Storage } from "@ionic/storage";
 
-import { S3File } from "./s3file";
+import { S3Client } from "./s3client";
 
 const logger = new Logger("S3Image");
 
@@ -12,7 +12,7 @@ export class CachedImage {
     private _url: SafeUrl;
 
     constructor(
-        private s3: S3File,
+        private s3: S3Client,
         private local: Storage,
         private sanitizer: DomSanitizer,
         private _pathList: string[],

@@ -1,5 +1,5 @@
-import { S3File } from './s3file';
+import { S3Client } from './s3client';
 import { CachedImage } from './s3image';
 
-export default S3File;
-export { S3File, CachedImage };
+export default S3Client;
+export { S3Client, CachedImage };
