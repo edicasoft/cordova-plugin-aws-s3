@@ -1,6 +1,6 @@
-var cordova = require("cordova/exec");
+var exec = require("cordova/exec");
 
-var pluginName = "AWSS3Plugin"
+var pluginName = "AWSS3Plugin";
 
 var names = [
 "download",
@@ -24,9 +24,9 @@ names.forEach(function(methodName) {
     obj[methodName] = function() {
         var args = Array.prototype.slice.call(arguments, 0);
         return new Promise(function(resolve, reject) {
-            cordova(resolve, reject, pluginName, methodName, args);
+            exec(resolve, reject, pluginName, methodName, args);
         });
-    }
+    };
 });
 
 module.exports = obj;
