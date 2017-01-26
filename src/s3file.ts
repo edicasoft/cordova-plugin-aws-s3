@@ -1,20 +1,21 @@
 import _ from "lodash";
+import { Injectable } from '@angular/core';
 import { Logger } from "log4ts";
 
 import { S3Client } from "./s3client";
 import { S3WebClient } from "./s3_web_client";
 
-const plugin = (window as any).plugin;
-
 const logger = new Logger("S3File");
 
-function isDef(typedec) {
-    return !_.isEqual(typedec, 'undefined');
-}
-const hasPlugin = isDef(typeof plugin) && isDef(typeof plugin.AWS) && isDef(typeof plugin.AWS.S3);
-
+@Injectable()
 export class S3File implements S3Client {
     constructor() {
+        const plugin = (window as any).plugin;
+        function isDef(typedec) {
+            return !_.isEqual(typedec, 'undefined');
+        }
+        const hasPlugin = isDef(typeof plugin) && isDef(typeof plugin.AWS) && isDef(typeof plugin.AWS.S3);
+
         this.client = hasPlugin ? plugin.AWS.S3 : new S3WebClient();
     }
 
