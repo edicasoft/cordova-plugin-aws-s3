@@ -35,9 +35,10 @@ export class S3WebClient implements S3Client {
         }));
     }
 
-    async download(path: string, type: string = "image/jpeg"): Promise<Blob> {
+    async download(path: string): Promise<string> {
         const res = await this.load(path);
-        return new Blob([res.Body], { type: type });
+        const blob = new Blob([res.Body]);
+        return URL.createObjectURL(blob);
     }
 
     async read(path: string): Promise<string> {
@@ -54,13 +55,24 @@ export class S3WebClient implements S3Client {
         }));
     }
 
-    async upload(path: string, blob: Blob): Promise<void> {
+    async upload(path: string, url: string): Promise<void> {
         logger.debug(() => `Uploading file: ${AWS_S3_BUCKET_NAME}:${path}`);
+
+        const blob = await new Promise<Blob>((resolve, reject) => {
+            let http = new XMLHttpRequest();
+            http.responseType = "blob";
+            http.onload = () => {
+                resolve(http.response);
+            };
+            http.onerror = reject;
+            http.open('GET', url, true);
+            http.send();
+        });
+
         await this.invoke(this.client.putObject({
             Bucket: AWS_S3_BUCKET_NAME,
             Key: path,
-            Body: blob,
-            ContentType: blob.type
+            Body: blob
         }));
     }
 

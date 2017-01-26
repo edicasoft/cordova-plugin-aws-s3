@@ -33,8 +33,8 @@ export class S3File implements S3Client {
         return this.client.write(path, text);
     }
 
-    async upload(path: string, blob: Blob): Promise<void> {
-        return this.client.upload(path, blob);
+    async upload(path: string, url: string): Promise<void> {
+        return this.client.upload(path, url);
     }
 
     async remove(path: string): Promise<void> {
