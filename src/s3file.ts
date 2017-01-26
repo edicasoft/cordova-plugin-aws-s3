@@ -1,15 +1,18 @@
 import _ from "lodash";
 import { Injectable } from '@angular/core';
+import { DomSanitizer } from "@angular/platform-browser";
+import { Storage } from "@ionic/storage";
 import { Logger } from "log4ts";
 
-import { S3Plugin } from "./s3client";
+import { S3Plugin } from "./s3plugin";
 import { S3WebClient } from "./s3_web_client";
+import { CachedImage } from "./s3image";
 
 const logger = new Logger("S3File");
 
 @Injectable()
 export class S3File {
-    constructor() {
+    constructor(private local: Storage, private sanitizer: DomSanitizer) {
         const plugin = (window as any).plugin;
         function isDef(typedec) {
             return !_.isEqual(typedec, 'undefined');
@@ -19,7 +22,14 @@ export class S3File {
         this.client = hasPlugin ? plugin.AWS.S3 : new S3WebClient();
     }
 
-    private client: S3Plugin;
+    private readonly client: S3Plugin;
+
+    createCachedImage(path: string, refreshRate = 1000 * 60 * 10): CachedImage {
+        return this.createCachedImageOfList([path], refreshRate);
+    }
+    createCachedImageOfList(pathList: string[], refreshRate = 1000 * 60 * 10): CachedImage {
+        return new CachedImage(this, this.local, this.sanitizer, pathList, refreshRate);
+    }
 
     async download(path: string): Promise<URL> {
         const url = await this.client.download(path);
