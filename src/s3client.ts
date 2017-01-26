@@ -19,10 +19,10 @@ export class S3Client {
         }
         const hasPlugin = isDef(typeof plugin) && isDef(typeof plugin.AWS) && isDef(typeof plugin.AWS.S3);
 
-        this.client = hasPlugin ? plugin.AWS.S3 : new S3WebClient();
+        this.plugin = hasPlugin ? plugin.AWS.S3 : new S3WebClient();
     }
 
-    private readonly client: S3Plugin;
+    private readonly plugin: S3Plugin;
 
     createCachedImage(path: string, refreshRate = 1000 * 60 * 10): CachedImage {
         return this.createCachedImageOfList([path], refreshRate);
@@ -32,55 +32,55 @@ export class S3Client {
     }
 
     async download(path: string): Promise<URL> {
-        const url = await this.client.download(path);
+        const url = await this.plugin.download(path);
         return new URL(url);
     }
 
     async read(path: string): Promise<string> {
-        return this.client.read(path);
+        return this.plugin.read(path);
     }
 
     async write(path: string, text: string): Promise<void> {
-        return this.client.write(path, text);
+        return this.plugin.write(path, text);
     }
 
     async upload(path: string, url: URL): Promise<void> {
-        return this.client.upload(path, url.href);
+        return this.plugin.upload(path, url.href);
     }
 
     async remove(path: string): Promise<void> {
-        return this.client.remove(path);
+        return this.plugin.remove(path);
     }
 
     async removeFiles(pathList: string[]): Promise<void> {
-        return this.client.removeFiles(pathList);
+        return this.plugin.removeFiles(pathList);
     }
 
     async removeDir(path: string): Promise<void> {
-        return this.client.removeDir(path);
+        return this.plugin.removeDir(path);
     }
 
     async copy(src: string, dst: string): Promise<void> {
-        return this.client.copy(src, dst);
+        return this.plugin.copy(src, dst);
     }
 
     async move(src: string, dst: string): Promise<void> {
-        return this.client.move(src, dst);
+        return this.plugin.move(src, dst);
     }
 
     async moveDir(src: string, dst: string): Promise<void> {
-        return this.client.moveDir(src, dst);
+        return this.plugin.moveDir(src, dst);
     }
 
     async list(path: string): Promise<Array<string>> {
-        return this.client.list(path);
+        return this.plugin.list(path);
     }
 
     async exists(path: string): Promise<boolean> {
-        return this.client.exists(path);
+        return this.plugin.exists(path);
     }
 
     async url(path: string, expiresInSeconds: number): Promise<string> {
-        return this.client.url(path, expiresInSeconds);
+        return this.plugin.url(path, expiresInSeconds);
     }
 }
